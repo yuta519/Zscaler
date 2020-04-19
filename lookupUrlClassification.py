@@ -24,11 +24,11 @@ def main():
         print('Please Input URL')
         sys.exit()
     else:
-        # Parse Input URL 
+        # Parse Input URL
         parsed_target_urls = []
         for i in range(0, len(target_urls)):
             domain = checkUrl(target_urls[i])
-            parsed_url = urlparse(target_urls[i])
+            # parsed_url = urlparse(target_urls[i])
             parsed_target_urls.append(domain)
         
         # Create API Cookie
@@ -37,8 +37,12 @@ def main():
 
         response = lookupUrlClassification(hostname, api_cookie, parsed_target_urls)
         for res in response:
-            print(res)
-
+            print(res['url'])
+            print(res['urlClassifications'])
+            if res['urlClassificationsWithSecurityAlert'] == []:
+                print('It is a Safe Site!')
+            else:
+                print(res['urlClassificationsWithSecurityAlert'])
 
 ### Extract Domain from Standard Input ("HTTPS" and "HTTP" are excluded)###
 def checkUrl(url):
