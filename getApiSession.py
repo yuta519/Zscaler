@@ -43,14 +43,3 @@ def getCookie(hostname, obfuscate_api_key, username, password):
     api_token = 'JSESSIONID=' + cookie['JSESSIONID']
     # print(api_token)
     return api_token
-
-def getAuditLogs(hostname, cookie):
-    url = 'https://'+hostname+'/api/v1/auditlogEntryReport'
-
-    headers = {
-        'content-type': "application/json",
-        'cache-control': "no-cache",
-        'cookie': cookie
-    }
-    response =requests.get(url, headers=headers)
-    # pprint.pprint(response.json())
