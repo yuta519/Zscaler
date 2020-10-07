@@ -15,14 +15,17 @@ def main():
     username = id_value[1] 
     password = id_value[2]
     hostname = id_value[3]
-        
+    
+    
+    zcat_json_open = open('zcat_jp_eng.json', 'r')
+    zcat_json_load = json.load(zcat_json_open)
+    print(zcat_json_load)
+    sys.exit()
+
     # Create API Cookie
     obfuscate_api_key = getApiSession.obfuscateApiKey(api_key)
     api_cookie = getApiSession.getCookie(hostname, obfuscate_api_key, username, password)
-    # print(api_cookie)
-
     response = createUrlFilteringRules(hostname, api_cookie)
-    # pprint.pprint(response)
     print(response.text)
 
 
@@ -35,26 +38,26 @@ def createUrlFilteringRules(hostname, cookie):
         'cookie': cookie
     }
 
+    # sample rule
     payload = {
         "name": "Test Policy 01",
-        "order": 1,
+        "order": 3,
         "protocols": [
             "ANY_RULE"
+        ],
+        "groups": [
+            {"id": 30587058, "name": "Everyone"}
         ],
         "rank": 7,
         "action": "BLOCK",
         "urlCategories": ["OTHER_ADULT_MATERIAL"]
     }
 
-    # payload = json.dumps(payload)
-    # print(payload)
-
     response=requests.post( 
         url,
         json.dumps(payload),
         headers=headers
     )
-    # res = response.json()
     res = response
     return res
 
