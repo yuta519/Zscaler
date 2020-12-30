@@ -1,9 +1,24 @@
-# Zscaler
-## ZscalerのAPIを利用したスクリプト
-Zscalerヘルプページに記載のAPI Referenceよりスクリプトを作成しています。
-https://help.zscaler.com/zia/api
+# Zscaler URL Lookup
 
-## 各種説明
+## 概要
+[Zscaler API](https://help.zscaler.com/zia/api)を利用して、ユーザから渡されたURLについて、Zscalerのカテゴライゼーション情報を表示します。
+
+## 各種ファイルの説明
 + `.env-sample` : Zscaler API利用にあたって必要な管理者アカウント情報やAPIトークンを格納
-+ `settings.py` : .envからアカウント情報を取得するための関数を定義
-+ `getApiSession.py` :  APIトークンは利用のため、現時刻から難読化処理が必要で本ファイルで関数を定義
++ `zia.py` :  Zscaler API利用での関数を定義
++ `main.py` :  Zscaler API利用にあたってのmain関数を定義
+
+## 必要ライブラリ
++ `requests`
+
+```
+pip install requests
+
+```
+
+## 使用方法
+
+## 注意事項
+
+## ライセンス
++ [MIT license](https://en.wikipedia.org/wiki/MIT_License).
