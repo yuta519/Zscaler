@@ -1,7 +1,7 @@
 import json
-import sys
-import time
 from re import match
+from sys import exit
+import time
 from urllib.parse import urlparse
 
 import requests
@@ -70,8 +70,9 @@ class Zia(object):
         headers = {
             'content-type': "application/json",
             'cache-control': "no-cache", 
-            'cookie': self.api_token}
-        response = requests.delete(api_endpoint, headers=headers)
+            'cookie': self.api_token
+        }
+        requests.delete(api_endpoint, headers=headers)
 
 
 class ZiaLookupUrl(Zia):
@@ -86,21 +87,26 @@ class ZiaLookupUrl(Zia):
             return domain
         else:
             return target_url
-    
+
     def get_url_categories(self, mode='all'):
         """Get Zscaler's url catergories."""
         self.login()
         if mode == 'all':
             api_endpoint = '{}/urlCategories'.format(self.base_url)
         elif mode == 'customonly':
-            api_endpoint = '{}/urlCategories?customOnly=true'.format(self.base_url)
+            api_endpoint = '{}/urlCategories?customOnly=true'.format(
+                            self.base_url)
+        else:
+            print('wrong option name : {}'.format(mode))
+            exit()
         headers = {
-            'content-type': "application/json",
-            'cache-control': "no-cache",
-            'cookie': self.api_token}
+            'content-type': 'application/json',
+            'cache-control': 'no-cache', 
+            'cookie': self.api_token
+        }
         response = requests.get(api_endpoint, headers=headers)
-        return response.text
         self.logout()
+        return response.text
 
     def url_lookup(self, target_urls):
         """Lookup url category classifications to given url."""
@@ -113,11 +119,12 @@ class ZiaLookupUrl(Zia):
         headers = {
             'content-type': "application/json",
             'cache-control': "no-cache",
-            'cookie': self.api_token}
+            'cookie': self.api_token
+        }
         response = requests.post( 
             api_endpoint,
             json.dumps(parsed_target_urls),
             headers=headers)
-        res = response.json()
-        print(res)
+        json_results = response.json()
         self.logout()
+        return json_results
