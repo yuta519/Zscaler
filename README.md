@@ -1,4 +1,4 @@
-# Zscaler URL Lookup
+# zscaler-sdk
 
 ## 概要
 [Zscaler API](https://help.zscaler.com/zia/api)を利用して、
