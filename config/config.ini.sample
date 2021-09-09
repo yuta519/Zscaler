@@ -1,0 +1,5 @@
+[credential]
+USERNAME=admin@zscaler.net
+PASSWORD=xxxx
+HOSTNAME=admin.zscaler.net
+APIKEY=xxx
