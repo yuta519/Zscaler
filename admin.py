@@ -1,6 +1,11 @@
 import json
+from typing import Dict
+from typing import List
+from typing import Union
+
 
 import requests
+from requests import api
 from requests.models import Response
 
 from auth import login
@@ -11,10 +16,13 @@ from base import Base
 base = Base()
 
 
-def fetch_adminusers(**kwargs):
+def fetch_adminusers(search_query: str = None) -> str:
     """Get Zscaler's url catergories."""
+    api_endpoint: str = f"{base.base_url}/adminUsers"
+    if search_query is not None:
+        api_endpoint = f"{api_endpoint}?search={search_query}"
+
     api_token: str = login()
-    api_endpoint: str = "{}/adminUsers".format(base.base_url)
     headers: dict[str, str] = {
         "content-type": "application/json",
         "cache-control": "no-cache",
@@ -22,25 +30,54 @@ def fetch_adminusers(**kwargs):
     }
     response: Response = requests.get(api_endpoint, headers=headers)
     logout(api_token)
+
     return response.text
 
 
-def url_lookup(self, target_urls):
-    """Lookup url category classifications to given url."""
-    self.login()
-    parsed_target_urls = []
-    for target_url in target_urls:
-        parsed_target_url = self.extract_url_domain(target_url)
-        parsed_target_urls.append(parsed_target_url)
-    api_endpoint = "{}/urlLookup".format(self.base_url)
-    headers = {
+def fetch_adminroles():
+    api_token = login()
+    pass
+
+
+def create_adminuser(
+    loginName: str,
+    userName: str,
+    email: str,
+    password: str,
+    rolename: str,
+) -> str:
+    api_token: str = login()
+    role_api_endpoint: str = f"{base.base_url}/adminRoles/lite"
+    user_api_endpoint: str = f"{base.base_url}/adminUsers"
+    headers: Dict[str, str] = {
         "content-type": "application/json",
         "cache-control": "no-cache",
-        "cookie": self.api_token,
+        "cookie": api_token,
     }
-    response = requests.post(
-        api_endpoint, json.dumps(parsed_target_urls), headers=headers
+
+    role_response: Response = requests.get(role_api_endpoint, headers=headers)
+    roles: List[Dict[str, Union[int, str]]] = role_response.json()
+    role_id: int = None
+    for role in roles:
+        if rolename in role.values():
+            role_id: int = role["id"]
+
+    admin_user_information = {
+        "loginName": loginName,
+        "userName": userName,
+        "email": email,
+        "password": password,
+        "role": {"id": role_id},
+        "adminScopescopeGroupMemberEntities": [],
+        "adminScopeType": "ORGANIZATION",
+        "adminScopeScopeEntities": [],
+        "isPasswordLoginAllowed": True,
+        "name": "Yuta Kawamura",
+    }
+    user_response = requests.post(
+        user_api_endpoint, json.dumps(admin_user_information), headers=headers
     )
-    json_results = response.json()
-    self.logout()
-    return json_results
+    logout(api_token)
+    print(user_response.text)
+    message: str = "Success" if user_response.status_code == 200 else "Failed"
+    return message
