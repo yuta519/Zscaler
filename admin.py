@@ -78,6 +78,7 @@ def create_adminuser(
         user_api_endpoint, json.dumps(admin_user_information), headers=headers
     )
     logout(api_token)
-    print(user_response.text)
-    message: str = "Success" if user_response.status_code == 200 else "Failed"
+
+    message: str = "Success" if user_response.status_code == 200 else f"Failed"
+    message += f": {user_response.status_code} {user_response.text}" if message == "Failed" else None
     return message
