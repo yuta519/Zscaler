@@ -1,6 +1,7 @@
 import json
 from re import match
 from sys import exit
+from typing import Dict, List
 from urllib.parse import urlparse
 
 import requests
@@ -43,22 +44,17 @@ def fetch_url_categories(isCustomOnly: bool=False) -> str:
     return response.json()
 
 
-# def lookup_url_classification(target_urls):
-#     """Lookup url category classifications to given url."""
-#     api_token = login()
-#     target_domains = []
-#     for target_url in target_urls:
-#         parsed_target_url = self.extract_url_domain(target_url)
-#         target_domains.append(parsed_target_url)
-#     api_endpoint = "{}/urlLookup".format(self.base_url)
-#     headers = {
-#         "content-type": "application/json",
-#         "cache-control": "no-cache",
-#         "cookie": self.api_token,
-#     }
-#     response = requests.post(
-#         api_endpoint, json.dumps(target_domains), headers=headers
-#     )
-#     json_results = response.json()
-#     self.logout()
-#     return json_results
+def lookup_url_classification(target_urls: List[str]) -> Dict[str, str]:
+    """Lookup url category classifications to given url."""
+    api_token = login()
+    api_endpoint = "{}/urlLookup".format(base.base_url)
+    headers = {
+        "content-type": "application/json",
+        "cache-control": "no-cache",
+        "cookie": api_token,
+    }
+    domains = [extract_url_domain(url) for url in target_urls]
+    response = requests.post(api_endpoint, json.dumps(domains), headers=headers) 
+    logout(api_token)
+
+    return response.json()
