@@ -1,6 +1,5 @@
 import json
 from re import match
-from sys import exit
 from typing import Dict, List
 from urllib.parse import urlparse
 
@@ -30,8 +29,7 @@ def fetch_url_categories(isCustomOnly: bool=False) -> str:
     api_token = login()
     api_endpoint = (
         "{}/urlCategories?customOnly=true".format(base.base_url) 
-        if isCustomOnly 
-        else "{}/urlCategories".format(base.base_url)
+        if isCustomOnly else "{}/urlCategories".format(base.base_url)
     )
     headers = {
         "content-type": "application/json",
@@ -42,6 +40,43 @@ def fetch_url_categories(isCustomOnly: bool=False) -> str:
     logout(api_token)
 
     return response.json()
+    
+
+def create_custom_url_category(
+    # id: str,
+    configured_name: str,
+    urls: List[str],
+    db_categorized_urls: List[str],
+    description: str,
+) -> str:
+    api_token = login()
+    api_endpoint =  "{}/urlCategories".format(base.base_url)
+    headers = {
+        "content-type": "application/json",
+        "cache-control": "no-cache",
+        "cookie": api_token,
+    }
+    payload = {
+        # "id": id,
+        "configuredName": configured_name,
+        "urls": urls,
+        "dbCategorizedUrls": db_categorized_urls,
+        "customCategory": True,
+        "editable": True,
+        "description": description,
+        "urlKeywordCounts": {
+            "totalUrlCount": 1,
+            "retainParentUrlCount": 0,
+            "totalKeywordCount": 0,
+            "retainParentKeywordCount": 0,
+        },
+        'urlsRetainingParentCategoryCount': 0,
+        "type": "URL_CATEGORY", 
+    }
+    response = requests.post(api_endpoint, json.dumps(payload), headers=headers)
+    logout(api_token)
+    print(payload)
+    print(response.json())
 
 
 def lookup_url_classification(target_urls: List[str]) -> Dict[str, str]:
@@ -58,3 +93,4 @@ def lookup_url_classification(target_urls: List[str]) -> Dict[str, str]:
     logout(api_token)
 
     return response.json()
+
