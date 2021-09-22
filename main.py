@@ -3,6 +3,7 @@ from admin import create_adminuser
 from url_filtering_rules import create_url_filering_rules
 from url_filtering_rules import fetch_all_url_filering_rules 
 from url_categories import fetch_url_categories 
+from url_categories import create_custom_url_category
 from url_categories import lookup_url_classification
 
 def main():
@@ -30,9 +31,14 @@ def main():
     #     action="ALLOW",
     # )
     # fetch_url_categories()
-    classfication = lookup_url_classification(["aaa.com"])
-    print(classfication)
-
+    # classfication = lookup_url_classification(["aaa.com"])
+    # print(classfication)
+    create_custom_url_category(
+        configured_name="TEST CATEGORY",
+        urls=[".test.co.jp"],
+        db_categorized_urls=[],
+        description="This url category is created with API for test",
+    )
 
 if __name__ == "__main__":
     main()

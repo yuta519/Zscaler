@@ -24,12 +24,13 @@ def extract_url_domain(target_url):
         return target_url
 
 
-def fetch_url_categories(isCustomOnly: bool=False) -> str:
+def fetch_url_categories(isCustomOnly: bool = False) -> str:
     """Get Zscaler's url catergories."""
     api_token = login()
     api_endpoint = (
-        "{}/urlCategories?customOnly=true".format(base.base_url) 
-        if isCustomOnly else "{}/urlCategories".format(base.base_url)
+        "{}/urlCategories?customOnly=true".format(base.base_url)
+        if isCustomOnly
+        else "{}/urlCategories".format(base.base_url)
     )
     headers = {
         "content-type": "application/json",
@@ -40,46 +41,40 @@ def fetch_url_categories(isCustomOnly: bool=False) -> str:
     logout(api_token)
 
     return response.json()
-    
+
 
 def create_custom_url_category(
-    # id: str,
     configured_name: str,
     urls: List[str],
     db_categorized_urls: List[str],
     description: str,
 ) -> str:
     api_token = login()
-    api_endpoint =  "{}/urlCategories".format(base.base_url)
+    api_endpoint = "{}/urlCategories".format(base.base_url)
     headers = {
         "content-type": "application/json",
         "cache-control": "no-cache",
         "cookie": api_token,
     }
     payload = {
-        # "id": "TEST",
         "configuredName": configured_name,
         "urls": urls,
         "dbCategorizedUrls": db_categorized_urls,
         "customCategory": True,
         "editable": True,
         "description": description,
-        "urlKeywordCounts": {
-            "totalUrlCount": 1,
-            "retainParentUrlCount": 0,
-            "totalKeywordCount": 0,
-            "retainParentKeywordCount": 0,
-        },
-        # TODO: {'code': 'INVALID_INPUT_ARGUMENT', 'message': 'Parent Url Super Category is invalid'}
-        # "Parent Url Super Category": "hoge",
-        # "urlSuperCategory": "User-Defined",
-        'urlsRetainingParentCategoryCount': 0,
-        "type": "URL_CATEGORY", 
+        "superCategory": "USER_DEFINED",
+        "urlsRetainingParentCategoryCount": 0,
+        "type": "URL_CATEGORY",
     }
     response = requests.post(api_endpoint, json.dumps(payload), headers=headers)
     logout(api_token)
-    print(payload)
-    print(response.json())
+    message: str = (
+        f"[INFO] {str(response.status_code)} {response.json()['configuredName']}"
+        if response.status_code == 200
+        else f"[INFO] {str(response.status_code)} {response.json()['message'] }"
+    )
+    return message
 
 
 def lookup_url_classification(target_urls: List[str]) -> Dict[str, str]:
@@ -92,8 +87,7 @@ def lookup_url_classification(target_urls: List[str]) -> Dict[str, str]:
         "cookie": api_token,
     }
     domains = [extract_url_domain(url) for url in target_urls]
-    response = requests.post(api_endpoint, json.dumps(domains), headers=headers) 
+    response = requests.post(api_endpoint, json.dumps(domains), headers=headers)
     logout(api_token)
 
     return response.json()
-
