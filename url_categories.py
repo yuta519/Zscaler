@@ -1,6 +1,5 @@
 import json
 from re import match
-from sys import exit
 from typing import Dict, List
 from urllib.parse import urlparse
 
@@ -25,12 +24,12 @@ def extract_url_domain(target_url):
         return target_url
 
 
-def fetch_url_categories(isCustomOnly: bool=False) -> str:
+def fetch_url_categories(isCustomOnly: bool = False) -> str:
     """Get Zscaler's url catergories."""
     api_token = login()
     api_endpoint = (
-        "{}/urlCategories?customOnly=true".format(base.base_url) 
-        if isCustomOnly 
+        "{}/urlCategories?customOnly=true".format(base.base_url)
+        if isCustomOnly
         else "{}/urlCategories".format(base.base_url)
     )
     headers = {
@@ -44,6 +43,7 @@ def fetch_url_categories(isCustomOnly: bool=False) -> str:
     return response.json()
 
 
+<<<<<<< HEAD
 def update_custom_url_category(isCustomOnly: bool=False) -> str:
     """Get Zscaler's url catergories."""
     api_token = login()
@@ -63,6 +63,43 @@ def update_custom_url_category(isCustomOnly: bool=False) -> str:
     return response.json()
 
 
+||||||| e40ccd9
+=======
+def create_custom_url_category(
+    configured_name: str,
+    urls: List[str],
+    db_categorized_urls: List[str],
+    description: str,
+) -> str:
+    api_token = login()
+    api_endpoint = "{}/urlCategories".format(base.base_url)
+    headers = {
+        "content-type": "application/json",
+        "cache-control": "no-cache",
+        "cookie": api_token,
+    }
+    payload = {
+        "configuredName": configured_name,
+        "urls": urls,
+        "dbCategorizedUrls": db_categorized_urls,
+        "customCategory": True,
+        "editable": True,
+        "description": description,
+        "superCategory": "USER_DEFINED",
+        "urlsRetainingParentCategoryCount": 0,
+        "type": "URL_CATEGORY",
+    }
+    response = requests.post(api_endpoint, json.dumps(payload), headers=headers)
+    logout(api_token)
+    message: str = (
+        f"[INFO] {str(response.status_code)} {response.json()['configuredName']}"
+        if response.status_code == 200
+        else f"[INFO] {str(response.status_code)} {response.json()['message'] }"
+    )
+    return message
+
+
+>>>>>>> c18b8fcc00c284fc802c7af65f603be5f3e82190
 def lookup_url_classification(target_urls: List[str]) -> Dict[str, str]:
     """Lookup url category classifications to given url."""
     api_token = login()
@@ -73,7 +110,7 @@ def lookup_url_classification(target_urls: List[str]) -> Dict[str, str]:
         "cookie": api_token,
     }
     domains = [extract_url_domain(url) for url in target_urls]
-    response = requests.post(api_endpoint, json.dumps(domains), headers=headers) 
+    response = requests.post(api_endpoint, json.dumps(domains), headers=headers)
     logout(api_token)
 
     return response.json()
