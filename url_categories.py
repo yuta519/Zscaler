@@ -77,20 +77,20 @@ def create_custom_url_category(
     return message
 
 
-def update_custom_url_category(isCustomOnly: bool = False) -> str:
-    """Get Zscaler's url catergories."""
+def update_custom_url_category(
+    category_id: str,
+    urls: List[str],
+) -> str:
+    """Update an existing Zscaler's url catergory."""
+    api_endpoint = f"{base.base_url}/urlCategories/{category_id}"
     api_token = login()
-    api_endpoint = (
-        "{}/urlCategories?customOnly=true".format(base.base_url)
-        if isCustomOnly
-        else "{}/urlCategories".format(base.base_url)
-    )
     headers = {
         "content-type": "application/json",
         "cache-control": "no-cache",
         "cookie": api_token,
     }
-    response = requests.get(api_endpoint, headers=headers)
+    payload = {urls}
+    response = requests.put(api_endpoint, data=json.dumps(payload), headers=headers)
     logout(api_token)
 
     return response.json()
