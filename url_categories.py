@@ -57,7 +57,7 @@ def create_custom_url_category(
         "cookie": api_token,
     }
     payload = {
-        # "id": id,
+        # "id": "TEST",
         "configuredName": configured_name,
         "urls": urls,
         "dbCategorizedUrls": db_categorized_urls,
@@ -70,6 +70,9 @@ def create_custom_url_category(
             "totalKeywordCount": 0,
             "retainParentKeywordCount": 0,
         },
+        # TODO: {'code': 'INVALID_INPUT_ARGUMENT', 'message': 'Parent Url Super Category is invalid'}
+        # "Parent Url Super Category": "hoge",
+        # "urlSuperCategory": "User-Defined",
         'urlsRetainingParentCategoryCount': 0,
         "type": "URL_CATEGORY", 
     }
