@@ -43,25 +43,6 @@ def fetch_url_categories(isCustomOnly: bool = False) -> str:
     return response.json()
 
 
-def update_custom_url_category(isCustomOnly: bool=False) -> str:
-    """Get Zscaler's url catergories."""
-    api_token = login()
-    api_endpoint = (
-        "{}/urlCategories?customOnly=true".format(base.base_url) 
-        if isCustomOnly 
-        else "{}/urlCategories".format(base.base_url)
-    )
-    headers = {
-        "content-type": "application/json",
-        "cache-control": "no-cache",
-        "cookie": api_token,
-    }
-    response = requests.get(api_endpoint, headers=headers)
-    logout(api_token)
-
-    return response.json()
-
-
 def create_custom_url_category(
     configured_name: str,
     urls: List[str],
@@ -94,6 +75,25 @@ def create_custom_url_category(
         else f"[INFO] {str(response.status_code)} {response.json()['message'] }"
     )
     return message
+
+
+def update_custom_url_category(isCustomOnly: bool = False) -> str:
+    """Get Zscaler's url catergories."""
+    api_token = login()
+    api_endpoint = (
+        "{}/urlCategories?customOnly=true".format(base.base_url)
+        if isCustomOnly
+        else "{}/urlCategories".format(base.base_url)
+    )
+    headers = {
+        "content-type": "application/json",
+        "cache-control": "no-cache",
+        "cookie": api_token,
+    }
+    response = requests.get(api_endpoint, headers=headers)
+    logout(api_token)
+
+    return response.json()
 
 
 def lookup_url_classification(target_urls: List[str]) -> Dict[str, str]:
