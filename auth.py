@@ -3,7 +3,6 @@ import time
 from typing import List
 from typing import Union
 
-
 import requests
 from requests.models import Response
 
